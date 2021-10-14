@@ -19,7 +19,8 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
                             <ul className="navbar-nav flex-grow">
                                 <NavItem>
                                     <NavLink tag={Link} className="text-dark" to="/home">Home</NavLink>
-                                    <NavLink tag={Link} className="text-dark" to="/heat">Таблицы потребителей тепла</NavLink>
+                                    <NavLink tag={Link} className="text-dark" to="/heat">Таблица потребителей тепла</NavLink>
+                                    <NavLink tag={Link} className="text-dark" to="/heat-datachart">Графики потребителей тепла</NavLink>
                                 </NavItem>
                             </ul>
                         </Collapse>

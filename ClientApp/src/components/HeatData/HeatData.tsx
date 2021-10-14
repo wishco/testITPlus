@@ -1,28 +1,76 @@
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useActions} from "../../hooks/useActions";
 import HeatDataTable from "./HeatDataTable";
+import {HeatGroup} from "../group/HeatGroup";
+import {heatDataFormatting, heatDataFormattingBasic} from "../../types/heatData/heatDataFormatting";
+import {
+    ConsumerSectionNameItem,
+    IHeatDataConsumer,
+    IHeatDataConsumers,
+} from "../../types/heatData/heatData";
 
 
 const HeatData: React.FC = () => {
-    const {heatDataFormatting, error, loading} = useTypedSelector(state => state.heatData)
-    const {fetchHeatData, GetGridRowDataByChangingItem} = useActions()
+    const {heatData, heatDataFormatting, loading} = useTypedSelector(state => state.heatData)
+    const {getGridRowDataByChangingItem} = useActions()
 
-    useEffect(() => {
-        fetchHeatData()
-    }, [])
 
-    if (error) return (<h1>При загрузке данных, произошла ошибка</h1>)
+
 
     return (
-        <div>
+        <HeatGroup>
             <HeatDataTable
                 heatDataFormatting={heatDataFormatting}
                 loading={loading}
-                GetGridRowDataByChangingItem ={GetGridRowDataByChangingItem}
+                getGridRowDataByChangingItem={getGridRowDataByChangingItem}
             />
-        </div>
+        </HeatGroup>
     )
 };
 
 export default HeatData;
+
+export function getHeatDataFormatting (heatData: IHeatDataConsumers):heatDataFormatting[]  {
+    let uniqId = 1
+    let arrResult: Partial<heatDataFormatting>[] = []
+    Object.entries(heatData).forEach((el:any) => {
+        const currSectionName:ConsumerSectionNameItem = el[0]
+        const currSection:IHeatDataConsumer[] = el[1]
+        return currSection.forEach((_el:IHeatDataConsumer) => {
+            return Object.values(_el.consumptions).forEach((__el) => {
+                let __heatDataFormatting:any = {
+                    id: uniqId++,
+                    ConsumerId: _el.ConsumerId,
+                    ConsumerSectionName: currSectionName,
+                    Name: _el.Name,
+                    ...__el
+                }
+                arrResult.push(__heatDataFormatting)
+            })
+        })
+    })
+    return arrResult as heatDataFormatting[]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

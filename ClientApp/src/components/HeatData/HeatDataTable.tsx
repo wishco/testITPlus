@@ -3,7 +3,7 @@ import * as React from 'react';
 import {createTheme} from '@mui/material/styles';
 import {
     DataGrid, GridCellParams,
-    GridColumns,
+    GridColumns, MuiEvent,
 } from '@mui/x-data-grid';
 import {ruRU} from '@mui/x-data-grid';
 
@@ -21,17 +21,16 @@ declare module '@mui/material/styles' {
 interface HeatDataProps {
     heatDataFormatting:any,
     loading: boolean
-    GetGridRowDataByChangingItem: any
+    getGridRowDataByChangingItem: any
 }
 
 const theme = createTheme({ruRU});
 
 const HeatDataTable: React.FC<HeatDataProps> = props => {
     const localeText = theme.ruRU.components.MuiDataGrid.defaultProps.localeText
-    const {heatDataFormatting, loading, GetGridRowDataByChangingItem} = props;
+    const {heatDataFormatting, loading, getGridRowDataByChangingItem} = props;
 
-
-    function cellCancelHandler(params: GridCellParams, event: any) {
+    function cellCancelHandler(params: GridCellParams, event: MuiEvent<React.SyntheticEvent<Element, Event>>) {
         if (params.value === undefined) event.defaultMuiPrevented = true
     }
 
@@ -45,15 +44,17 @@ const HeatDataTable: React.FC<HeatDataProps> = props => {
                 loading={loading}
                 localeText={localeText}
                 rowHeight={30}
+
                 onCellKeyDown={(params, event) => {
                     cellCancelHandler(params, event)
                 }}
                 onCellDoubleClick={(params, event) => {
                     cellCancelHandler(params, event)
                 }}
+
                 onCellEditCommit={(params, event) => {
                     event.defaultMuiPrevented = true
-                    GetGridRowDataByChangingItem(params)
+                     getGridRowDataByChangingItem(params)
                 }}
             />
         </div>
